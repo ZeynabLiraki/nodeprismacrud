@@ -1,10 +1,12 @@
-import { type Request, type Response } from "express";
+import { NextFunction, type Request, type Response } from "express";
 import prismaClient from "../prisma/prismaClient";
 import bcrypt, { compare } from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { SECRET_JWT } from "../secrets";
+import { BadRequestException } from "../exceptions/badRequest";
+import { ErrorCode } from "../exceptions/root";
 
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password, name } = req.body;
 
@@ -12,7 +14,10 @@ export const signup = async (req: Request, res: Response) => {
       where: { email },
     });
     if (existingUser) {
-      return res.status(400).json({ error: "User already exists!" });
+       next(new BadRequestException(
+        "User already exists!",
+        ErrorCode.USER_ALREADY_EXIST
+      ));
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
