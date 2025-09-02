@@ -11,5 +11,7 @@
     "sourceMap": true,
     "declaration": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "typeRoots": ["./src/types", "./node_modules/@types"],
+  "types": ["node", "express"]
 }

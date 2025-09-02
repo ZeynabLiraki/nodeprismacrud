@@ -46,9 +46,6 @@ export const signup = async (
   res.status(201).json(userWithoutPassword);
 };
 
-
-
-
 export const login = async (
   req: Request,
   res: Response,
@@ -75,7 +72,7 @@ export const login = async (
     return next(
       new ExceptionError(
         "User does not exist!",
-        401,
+        404,
         ErrorCode.USER_NOT_FOUND,
         null
       )
@@ -98,4 +95,9 @@ export const login = async (
   });
   const { password: _, ...userWithoutPassword } = existingUser;
   res.status(200).json({ user: userWithoutPassword, token });
+};
+
+// Return the loged in user
+export const me = async (req: Request, res: Response, next: NextFunction) => {
+  res.json((req as any).user);
 };
